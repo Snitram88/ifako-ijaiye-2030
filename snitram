@@ -1,0 +1,16 @@
+# make sure you're in the project directory
+cd /Users/martinsolaiya/Documents/ifako-ijaiye-2030
+
+# initialise (only once)
+git init
+
+# stage everything and make an initial commit
+git add .
+git commit -m "Initial commit"
+
+# now add the remote (use the SSH URL if you prefer, e.g. git@github.com:Snitram88/ifako-ijaiye-2030.git)
+git remote add origin https://github.com/Snitram88/ifako-ijaiye-2030.git
+
+# set the default branch and push
+git branch -M main        # or master if that’s your default
+git push -u origin main
