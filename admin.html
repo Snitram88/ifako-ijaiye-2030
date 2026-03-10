@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- =========================
+  SECTION: HEAD
+  ========================= -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard | Ifako-Ijaiye 2030 Accelerator</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    /* =========================
+    SECTION: BASE LAYOUT
+    ========================= */
+    body {
+      background: #08111f;
+      color: #edf4ff;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 0;
+    }
+
+    .admin-shell {
+      width: min(100% - 32px, 1600px);
+      margin: 0 auto;
+      padding: 32px 0 60px;
+    }
+
+    .admin-topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+
+    .admin-title h1 {
+      margin: 0;
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1;
+      letter-spacing: -0.04em;
+    }
+
+    .admin-title p {
+      margin: 10px 0 0;
+      color: #a9b8d3;
+      max-width: 76ch;
+    }
+
+    .admin-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 999px;
+      background: rgba(255,255,255,0.06);
+      color: #dceafe;
+      font-size: 0.92rem;
+      margin-bottom: 14px;
+    }
+
+    .admin-badge-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #19c37d, #2dd4bf);
+      box-shadow: 0 0 16px rgba(25, 195, 125, 0.55);
+    }
+
+    .admin-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .admin-button {
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.06);
+      color: #edf4ff;
+      padding: 12px 16px;
+      border-radius: 14px;
+      cursor: pointer;
+      font-weight: 700;
+      transition: 0.2s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .admin-button:hover {
+      transform: translateY(-2px);
+      background: rgba(255,255,255,0.1);
+    }
+
+    .admin-button.primary {
+      background: linear-gradient(135deg, #19c37d, #2dd4bf);
+      color: #03121b;
+      border: none;
+    }
+
+    .admin-meta {
+      margin: 0 0 26px;
+      color: #9fb0cc;
+      font-size: 0.94rem;
+    }
+
+    /* =========================
+    SECTION: KPI CARDS
+    ========================= */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    .status-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 18px;
+      margin-bottom: 28px;
+    }
+
+    .kpi-card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 22px;
+      padding: 22px;
+      box-shadow: 0 18px 50px rgba(0, 0, 0, 0.22);
+    }
+
+    .kpi-card h3 {
+      margin: 0;
+      font-size: 0.98rem;
+      color: #a9b8d3;
+      font-weight: 600;
+    }
+
+    .kpi-card p {
+      margin: 12px 0 0;
+      font-size: 2.3rem;
+      font-weight: 800;
+      letter-spacing: -0.05em;
+      color: #ffffff;
+    }
+
+    .kpi-card small {
+      display: block;
+      margin-top: 8px;
+      color: #8da3c7;
+    }
+
+    /* =========================
+    SECTION: NOTE STATUS
+    ========================= */
+    .note-status {
+      font-size: 0.8rem;
+      color: #8da3c7;
+    }
+
+    .note-status.saved {
+      color: #86efac;
+    }
+
+    .note-status.saving {
+      color: #fcd34d;
+    }
+
+    .note-status.error {
+      color: #fca5a5;
+    }
+
+    /* =========================
+    SECTION: IMPACT CARDS
+    ========================= */
+    .impact-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+      margin-bottom: 28px;
+    }
+
+    .impact-card {
+      background: linear-gradient(180deg, rgba(25,195,125,0.10), rgba(255,255,255,0.03));
+      border: 1px solid rgba(45,212,191,0.16);
+      border-radius: 22px;
+      padding: 22px;
+    }
+
+    .impact-card .label {
+      color: #9ee8d2;
+      font-size: 0.86rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 700;
+    }
+
+    .impact-card h3 {
+      margin: 10px 0 8px;
+      font-size: 1.2rem;
+      letter-spacing: -0.02em;
+    }
+
+    .impact-card p {
+      margin: 0;
+      color: #b8c8e4;
+    }
+
+    /* =========================
+    SECTION: ADMIN NAV
+    ========================= */
+    .admin-nav {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 28px;
+    }
+
+    .admin-nav a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 16px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: #edf4ff;
+      text-decoration: none;
+      font-weight: 700;
+      transition: 0.2s ease;
+    }
+
+    .admin-nav a:hover {
+      transform: translateY(-2px);
+      background: rgba(255,255,255,0.08);
+    }
+
+    /* =========================
+    SECTION: CHARTS
+    ========================= */
+    .charts-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 18px;
+      margin-bottom: 28px;
+    }
+
+    .charts-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin-bottom: 28px;
+    }
+
+    .chart-card,
+    .admin-section {
+      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 28px;
+      padding: 24px;
+      box-shadow: 0 18px 50px rgba(0, 0, 0, 0.18);
+    }
+
+    .chart-header,
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    .chart-header h2,
+    .section-title-block h2 {
+      margin: 0;
+      font-size: 1.35rem;
+      letter-spacing: -0.03em;
+    }
+
+    .chart-header p,
+    .section-title-block p {
+      margin: 8px 0 0;
+      color: #a9b8d3;
+    }
+
+    /* =========================
+    SECTION: FILTERS / SEARCH
+    ========================= */
+    .section-tools {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .admin-search {
+      min-width: 260px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.05);
+      color: #edf4ff;
+      outline: none;
+    }
+
+    .admin-search::placeholder {
+      color: #8da3c7;
+    }
+
+    .status-filter-row {
+      margin-bottom: 16px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .status-select {
+      width: 100%;
+      min-width: 160px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.05);
+      color: #edf4ff;
+      outline: none;
+    }
+
+    .notes-input {
+      width: 100%;
+      min-height: 80px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.05);
+      color: #edf4ff;
+      outline: none;
+      resize: vertical;
+      font-family: inherit;
+    }
+
+    /* =========================
+    SECTION: TABLES
+    ========================= */
+    .table-wrap {
+      overflow-x: auto;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.03);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 2400px;
+    }
+
+    th,
+    td {
+      padding: 14px 16px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      vertical-align: top;
+    }
+
+    th {
+      background: rgba(255,255,255,0.04);
+      color: #ffffff;
+      font-size: 0.92rem;
+      white-space: nowrap;
+    }
+
+    td {
+      color: #d7e6ff;
+      font-size: 0.95rem;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .empty-state {
+      padding: 22px 16px;
+      color: #a9b8d3;
+      text-align: center;
+    }
+
+    /* =========================
+    SECTION: STATUS BADGES
+    ========================= */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 7px 10px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: capitalize;
+      white-space: nowrap;
+    }
+
+    .status-new {
+      background: rgba(148, 163, 184, 0.16);
+      color: #cbd5e1;
+    }
+
+    .status-reviewed {
+      background: rgba(56, 189, 248, 0.16);
+      color: #bae6fd;
+    }
+
+    .status-contacted {
+      background: rgba(245, 158, 11, 0.16);
+      color: #fde68a;
+    }
+
+    .status-approved {
+      background: rgba(25, 195, 125, 0.16);
+      color: #bbf7d0;
+    }
+
+    .status-rejected {
+      background: rgba(239, 68, 68, 0.16);
+      color: #fecaca;
+    }
+
+    /* =========================
+    SECTION: FOOTER
+    ========================= */
+    .admin-footer {
+      margin-top: 26px;
+      color: #8ea1c0;
+      font-size: 0.92rem;
+      text-align: center;
+    }
+
+    canvas {
+      width: 100% !important;
+      max-height: 340px !important;
+    }
+
+    /* =========================
+    SECTION: RESPONSIVE
+    ========================= */
+    @media (max-width: 1200px) {
+      .kpi-grid,
+      .status-kpi-grid,
+      .impact-grid,
+      .charts-grid,
+      .charts-grid-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .section-header,
+      .chart-header {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .section-tools {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .admin-search,
+      .admin-button,
+      .status-select {
+        width: 100%;
+      }
+
+      .kpi-grid,
+      .status-kpi-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-shell">
+    <!-- =========================
+    SECTION: TOPBAR
+    ========================= -->
+    <div class="admin-topbar">
+      <div class="admin-title">
+        <div class="admin-badge">
+          <span class="admin-badge-dot"></span>
+          ESG / SDG Monitoring Console
+        </div>
+        <h1>Accelerator Admin Dashboard</h1>
+        <p>
+          Monitor education access, enterprise formalization, stakeholder engagement, and
+          real-time operational signals for the Ifako-Ijaiye 2030 Accelerator.
+        </p>
+      </div>
+
+      <div class="admin-actions">
+        <button class="admin-button" id="refreshDashboardBtn" type="button">Refresh Data</button>
+        <button class="admin-button" id="logoutBtn" type="button">Logout</button>
+        <a href="index.html" class="admin-button primary">Back to Website</a>
+      </div>
+    </div>
+
+    <!-- =========================
+    SECTION: LAST UPDATED
+    ========================= -->
+    <div class="admin-meta">
+      Last updated: <span id="lastUpdated">--</span>
+    </div>
+
+    <!-- =========================
+    SECTION: PRIMARY KPI GRID
+    ========================= -->
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <h3>Total Youth Applications</h3>
+        <p id="youthCount">0</p>
+        <small>SDG 4 talent pipeline demand</small>
+      </div>
+
+      <div class="kpi-card">
+        <h3>Total Artisan Registrations</h3>
+        <p id="artisanCount">0</p>
+        <small>SDG 8 local enterprise onboarding</small>
+      </div>
+
+      <div class="kpi-card">
+        <h3>Total Partnership Inquiries</h3>
+        <p id="partnerCount">0</p>
+        <small>Institutional and sponsor interest</small>
+      </div>
+
+      <div class="kpi-card">
+        <h3>Total Submissions</h3>
+        <p id="totalSubmissions">0</p>
+        <small>Combined operational intake volume</small>
+      </div>
+    </div>
+
+    <!-- =========================
+    SECTION: STATUS KPI GRID
+    ========================= -->
+    <div class="status-kpi-grid">
+      <div class="kpi-card">
+        <h3>Approved</h3>
+        <p id="approvedCount">0</p>
+        <small>Ready for activation or onboarding</small>
+      </div>
+
+      <div class="kpi-card">
+        <h3>Pending Review</h3>
+        <p id="pendingCount">0</p>
+        <small>Fresh submissions awaiting review</small>
+      </div>
+
+      <div class="kpi-card">
+        <h3>Contacted</h3>
+        <p id="contactedCount">0</p>
+        <small>Already engaged by the operations team</small>
+      </div>
+
+      <div class="kpi-card">
+        <h3>Reviewed</h3>
+        <p id="reviewedCount">0</p>
+        <small>Screened and under consideration</small>
+      </div>
+
+      <div class="kpi-card">
+        <h3>Rejected</h3>
+        <p id="rejectedCount">0</p>
+        <small>Declined or closed out</small>
+      </div>
+    </div>
+
+    <!-- =========================
+    SECTION: IMPACT CARDS
+    ========================= -->
+    <div class="impact-grid">
+      <div class="impact-card">
+        <div class="label">SDG 4</div>
+        <h3>Education & Skills Readiness</h3>
+        <p>
+          Youth application demand indicates interest in coding, analytics, and green-collar pathways.
+        </p>
+      </div>
+
+      <div class="impact-card">
+        <div class="label">SDG 8</div>
+        <h3>Enterprise Visibility & Decent Work</h3>
+        <p>
+          Artisan registrations signal momentum toward formalization, discoverability, and credit-readiness.
+        </p>
+      </div>
+
+      <div class="impact-card">
+        <div class="label">ESG / SROI</div>
+        <h3>Stakeholder Confidence</h3>
+        <p>
+          Partnership inquiries provide a leading indicator of sponsor confidence and ecosystem alignment.
+        </p>
+      </div>
+    </div>
+
+    <!-- =========================
+    SECTION: PAGE NAVIGATION
+    ========================= -->
+    <div class="admin-nav">
+      <a href="#analytics-section">Analytics</a>
+      <a href="#youth-section">Youth Applications</a>
+      <a href="#artisan-section">Artisan Registrations</a>
+      <a href="#partner-section">Partnership Inquiries</a>
+    </div>
+
+    <!-- =========================
+    SECTION: ANALYTICS
+    ========================= -->
+    <section class="chart-card" id="analytics-section">
+      <div class="chart-header">
+        <div>
+          <h2>Impact Analytics Overview</h2>
+          <p>Derived directly from form submissions currently stored in the operational database.</p>
+        </div>
+      </div>
+
+      <div class="charts-grid">
+        <div class="chart-card" style="padding: 18px;">
+          <div class="chart-header">
+            <div>
+              <h2>Youth Applications by Month</h2>
+              <p>Monthly intake trend for the Future-Labs pipeline.</p>
+            </div>
+          </div>
+          <canvas id="youthMonthlyChart"></canvas>
+        </div>
+
+        <div class="chart-card" style="padding: 18px;">
+          <div class="chart-header">
+            <div>
+              <h2>Youth Track Distribution</h2>
+              <p>Interest across coding, analytics, and solar engineering.</p>
+            </div>
+          </div>
+          <canvas id="youthTrackChart"></canvas>
+        </div>
+      </div>
+
+      <div class="charts-grid-2">
+        <div class="chart-card" style="padding: 18px;">
+          <div class="chart-header">
+            <div>
+              <h2>Artisan Category Distribution</h2>
+              <p>Most active MSME or service categories registering on Artisan 360.</p>
+            </div>
+          </div>
+          <canvas id="artisanCategoryChart"></canvas>
+        </div>
+
+        <div class="chart-card" style="padding: 18px;">
+          <div class="chart-header">
+            <div>
+              <h2>Partnership Interest Breakdown</h2>
+              <p>What sponsors and partners want to support most.</p>
+            </div>
+          </div>
+          <canvas id="partnerInterestChart"></canvas>
+        </div>
+      </div>
+
+      <div class="charts-grid-2">
+        <div class="chart-card" style="padding: 18px;">
+          <div class="chart-header">
+            <div>
+              <h2>Status Distribution</h2>
+              <p>Overall workflow mix across youth, artisans, and partners.</p>
+            </div>
+          </div>
+          <canvas id="statusDistributionChart"></canvas>
+        </div>
+
+        <div class="chart-card" style="padding: 18px;">
+          <div class="chart-header">
+            <div>
+              <h2>Approval Pipeline by Intake Type</h2>
+              <p>Approved vs non-approved records across all three operational pipelines.</p>
+            </div>
+          </div>
+          <canvas id="pipelineConversionChart"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================
+    SECTION: YOUTH TABLE
+    ========================= -->
+    <section class="admin-section" id="youth-section">
+      <div class="section-header">
+        <div class="section-title-block">
+          <h2>Youth Applications</h2>
+          <p>Applications submitted through the Future-Labs intake form.</p>
+        </div>
+
+        <div class="section-tools">
+          <input
+            type="text"
+            id="searchYouth"
+            class="admin-search"
+            placeholder="Search youth applicants by name, email, phone, track..."
+          />
+          <button class="admin-button" id="exportYouthBtn" type="button">Export Youth CSV</button>
+        </div>
+      </div>
+
+      <div class="status-filter-row">
+        <select id="statusFilterYouth" class="status-select">
+          <option value="">All Status</option>
+          <option value="new">New</option>
+          <option value="reviewed">Reviewed</option>
+          <option value="contacted">Contacted</option>
+          <option value="approved">Approved</option>
+          <option value="rejected">Rejected</option>
+        </select>
+      </div>
+
+      <div class="table-wrap">
+        <table id="youthTable">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Gender</th>
+              <th>Age</th>
+              <th>Employment Status</th>
+              <th>Location Detail</th>
+              <th>Sustainability Interest</th>
+              <th>Track</th>
+              <th>Goals</th>
+              <th>Status</th>
+              <th>Action</th>
+              <th>Assigned Admin</th>
+              <th>Notes</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td colspan="15" class="empty-state">Loading youth applications...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- =========================
+    SECTION: ARTISAN TABLE
+    ========================= -->
+    <section class="admin-section" id="artisan-section">
+      <div class="section-header">
+        <div class="section-title-block">
+          <h2>Artisan Registrations</h2>
+          <p>Verified business and artisan submissions from Artisan 360 registration.</p>
+        </div>
+
+        <div class="section-tools">
+          <input
+            type="text"
+            id="searchArtisan"
+            class="admin-search"
+            placeholder="Search artisans by business, contact, category, location..."
+          />
+          <button class="admin-button" id="exportArtisanBtn" type="button">Export Artisan CSV</button>
+        </div>
+      </div>
+
+      <div class="status-filter-row">
+        <select id="statusFilterArtisan" class="status-select">
+          <option value="">All Status</option>
+          <option value="new">New</option>
+          <option value="reviewed">Reviewed</option>
+          <option value="contacted">Contacted</option>
+          <option value="approved">Approved</option>
+          <option value="rejected">Rejected</option>
+        </select>
+      </div>
+
+      <div class="table-wrap">
+        <table id="artisanTable">
+          <thead>
+            <tr>
+              <th>Business</th>
+              <th>Contact</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Gender</th>
+              <th>Age</th>
+              <th>Employment Status</th>
+              <th>Location Detail</th>
+              <th>Sustainability Interest</th>
+              <th>Category</th>
+              <th>Description</th>
+              <th>Status</th>
+              <th>Action</th>
+              <th>Assigned Admin</th>
+              <th>Notes</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td colspan="16" class="empty-state">Loading artisan registrations...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- =========================
+    SECTION: PARTNER TABLE
+    ========================= -->
+    <section class="admin-section" id="partner-section">
+      <div class="section-header">
+        <div class="section-title-block">
+          <h2>Partnership Inquiries</h2>
+          <p>Corporate, institutional, and ecosystem partner interest submissions.</p>
+        </div>
+
+        <div class="section-tools">
+          <input
+            type="text"
+            id="searchPartner"
+            class="admin-search"
+            placeholder="Search partners by name, organization, email, interest..."
+          />
+          <button class="admin-button" id="exportPartnerBtn" type="button">Export Partner CSV</button>
+        </div>
+      </div>
+
+      <div class="status-filter-row">
+        <select id="statusFilterPartner" class="status-select">
+          <option value="">All Status</option>
+          <option value="new">New</option>
+          <option value="reviewed">Reviewed</option>
+          <option value="contacted">Contacted</option>
+          <option value="approved">Approved</option>
+          <option value="rejected">Rejected</option>
+        </select>
+      </div>
+
+      <div class="table-wrap">
+        <table id="partnerTable">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Organization</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Gender</th>
+              <th>Age</th>
+              <th>Employment Status</th>
+              <th>Location Detail</th>
+              <th>Sustainability Interest</th>
+              <th>Interest</th>
+              <th>Message</th>
+              <th>Status</th>
+              <th>Action</th>
+              <th>Assigned Admin</th>
+              <th>Notes</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td colspan="16" class="empty-state">Loading partnership inquiries...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- =========================
+    SECTION: FOOTER
+    ========================= -->
+    <div class="admin-footer">
+      Secure dashboard session active. Data is sourced from your protected local backend and MySQL database.
+    </div>
+  </div>
+
+  <script src="admin.js"></script>
+</body>
+</html>

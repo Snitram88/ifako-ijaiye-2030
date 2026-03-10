@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- =========================
+  SECTION: HEAD
+  ========================= -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Get Involved | Ifako-Ijaiye 2030 Accelerator</title>
+  <meta
+    name="description"
+    content="Apply to Future-Labs, register on Artisan 360, or initiate a corporate partnership with the Ifako-Ijaiye 2030 Accelerator."
+  />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- =========================
+  SECTION: HEADER / NAVIGATION
+  ========================= -->
+  <header class="topbar">
+    <div class="container nav">
+      <a href="index.html" class="brand" aria-label="Optimity Impact Solutions home">
+        <span class="brand-mark"></span>
+        <span class="brand-text">
+          Optimity Impact Solutions
+          <small>Ifako-Ijaiye 2030 Accelerator</small>
+        </span>
+      </a>
+
+      <nav class="nav-links" id="navLinks">
+        <a href="index.html">Home</a>
+        <a href="about.html">The Accelerator</a>
+        <a href="impact.html">Impact Dashboard</a>
+        <a href="repository.html">Repository</a>
+        <a href="contact.html">Get Involved</a>
+      </nav>
+
+      <button class="mobile-toggle" id="mobileToggle" aria-label="Open menu">☰</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- =========================
+    SECTION: PAGE HERO
+    ========================= -->
+    <section class="page-hero section">
+      <div class="container">
+        <div class="reveal">
+          <div class="pill">
+            <span class="eyebrow-dot"></span>
+            Become Part of the Pipeline
+          </div>
+          <h1>
+            Turn interest into <span class="gradient-text">participation, partnership, and progress.</span>
+          </h1>
+          <p>
+            This page is structured to convert three key audiences clearly: youth applicants, artisans and MSMEs,
+            and corporate or institutional partners.
+          </p>
+        </div>
+
+        <div class="contact-grid reveal">
+          <article class="contact-card">
+            <h4>For Youths</h4>
+            <p>Apply for the next Future-Labs cohort and access skills that increase your earning potential.</p>
+          </article>
+
+          <article class="contact-card">
+            <h4>For Artisans</h4>
+            <p>Register your business on Artisan 360 and build your local visibility, trust, and reputation.</p>
+          </article>
+
+          <article class="contact-card">
+            <h4>For Sponsors</h4>
+            <p>Support a measurable local SDG platform built around transparency and operational discipline.</p>
+          </article>
+
+          <article class="contact-card">
+            <h4>For Ecosystem Partners</h4>
+            <p>Contribute hardware, curriculum support, data, jobs pathways, or institutional partnership capacity.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================
+    SECTION: FORMS PANEL
+    ========================= -->
+    <section class="section section-sm">
+      <div class="container">
+        <div class="forms-panel reveal">
+          <div class="tabs">
+            <button class="tab-btn active" data-tab="youth" type="button">Youth Application</button>
+            <button class="tab-btn" data-tab="artisan" type="button">Artisan Registration</button>
+            <button class="tab-btn" data-tab="partner" type="button">Corporate Partnership</button>
+          </div>
+
+          <!-- =========================
+          SECTION: YOUTH APPLICATION FORM
+          ========================= -->
+          <div class="tab-content active" id="tab-youth">
+            <form id="youthForm">
+              <!-- BASIC IDENTITY -->
+              <div class="form-grid">
+                <div class="field">
+                  <label for="youth-name">Full Name *</label>
+                  <input id="youth-name" data-required type="text" placeholder="Enter your full name" />
+                </div>
+                <div class="field">
+                  <label for="youth-email">Email Address *</label>
+                  <input id="youth-email" data-required type="email" placeholder="your@email.com" />
+                </div>
+              </div>
+
+              <!-- CONTACT + TRACK -->
+              <div class="form-grid">
+                <div class="field">
+                  <label for="youth-phone">Phone Number *</label>
+                  <input id="youth-phone" data-required type="tel" placeholder="+234..." />
+                </div>
+                <div class="field">
+                  <label for="track">Preferred Track *</label>
+                  <select id="track" data-required>
+                    <option value="">Select a track</option>
+                    <option>Coding</option>
+                    <option>Data Analytics</option>
+                    <option>Solar Engineering</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- DEMOGRAPHIC INFORMATION -->
+              <div class="form-grid">
+                <div class="field">
+                  <label for="youth-gender">Gender *</label>
+                  <select id="youth-gender" data-required>
+                    <option value="">Select gender</option>
+                    <option value="female">Female</option>
+                    <option value="male">Male</option>
+                    <option value="other">Other</option>
+                    <option value="prefer-not-to-say">Prefer not to say</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="youth-age">Age *</label>
+                  <input id="youth-age" data-required type="number" min="15" max="60" placeholder="Enter your age" />
+                </div>
+              </div>
+
+              <!-- EMPLOYMENT + LOCATION -->
+              <div class="form-grid">
+                <div class="field">
+                  <label for="youth-employment-status">Employment Status *</label>
+                  <select id="youth-employment-status" data-required>
+                    <option value="">Select employment status</option>
+                    <option value="student">Student</option>
+                    <option value="unemployed">Unemployed</option>
+                    <option value="employed">Employed</option>
+                    <option value="self-employed">Self-employed</option>
+                    <option value="intern">Intern</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="youth-location-detail">Location Detail *</label>
+                  <input
+                    id="youth-location-detail"
+                    data-required
+                    type="text"
+                    placeholder="e.g. Iju, Obawole, Ifako, Ogba"
+                  />
+                </div>
+              </div>
+
+              <!-- SUSTAINABILITY -->
+              <div class="field">
+                <label for="youth-sustainability-interest">Sustainability Interest *</label>
+                <select id="youth-sustainability-interest" data-required>
+                  <option value="">Select sustainability interest</option>
+                  <option value="green-energy">Green Energy</option>
+                  <option value="recycling">Recycling</option>
+                  <option value="sustainable-agriculture">Sustainable Agriculture</option>
+                  <option value="climate-tech">Climate Technology</option>
+                  <option value="environmental-awareness">Environmental Awareness</option>
+                  <option value="general-sustainability">General Sustainability</option>
+                </select>
+              </div>
+
+              <!-- GOALS -->
+              <div class="field">
+                <label for="youth-message">Tell us about your goals *</label>
+                <textarea
+                  id="youth-message"
+                  data-required
+                  placeholder="What do you hope to achieve through Future-Labs?"
+                ></textarea>
+              </div>
+
+              <button class="btn btn-primary" type="submit">Submit Application</button>
+              <div class="notice"></div>
+            </form>
+          </div>
+
+          <!-- =========================
+          SECTION: ARTISAN REGISTRATION FORM
+          ========================= -->
+          <div class="tab-content" id="tab-artisan">
+            <form id="artisanForm">
+              <!-- BUSINESS IDENTITY -->
+              <div class="form-grid">
+                <div class="field">
+                  <label for="biz-name">Business / Trade Name *</label>
+                  <input id="biz-name" data-required type="text" placeholder="Enter business or trade name" />
+                </div>
+                <div class="field">
+                  <label for="artisan-name">Owner / Contact Name *</label>
+                  <input id="artisan-name" data-required type="text" placeholder="Enter contact person" />
+                </div>
+              </div>
+
+              <!-- CONTACT INFORMATION -->
+              <div class="form-grid">
+                <div class="field">
+                  <label for="artisan-email">Email Address *</label>
+                  <input id="artisan-email" data-required type="email" placeholder="business@email.com" />
+                </div>
+                <div class="field">
+                  <label for="artisan-phone">Phone Number *</label>
+                  <input id="artisan-phone" data-required type="tel" placeholder="+234..." />
+                </div>
+              </div>
+
+              <!-- BUSINESS CATEGORY + LOCATION -->
+              <div class="form-grid">
+                <div class="field">
+                  <label for="category">Service Category *</label>
+                  <select id="category" data-required>
+                    <option value="">Select a category</option>
+                    <option>Tailoring</option>
+                    <option>Plumbing</option>
+                    <option>Electrical</option>
+                    <option>Carpentry</option>
+                    <option>Beauty & Personal Care</option>
+                    <option>Other</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="artisan-location-detail">Location Detail *</label>
+                  <input
+                    id="artisan-location-detail"
+                    data-required
+                    type="text"
+                    placeholder="e.g. Iju, Obawole, Ifako, Ogba"
+                  />
+                </div>
+              </div>
+
+              <!-- DEMOGRAPHIC INFORMATION -->
+              <div class="form-grid">
+                <div class="field">
+                  <label for="artisan-gender">Gender *</label>
+                  <select id="artisan-gender" data-required>
+                    <option value="">Select gender</option>
+                    <option value="female">Female</option>
+                    <option value="male">Male</option>
+                    <option value="other">Other</option>
+                    <option value="prefer-not-to-say">Prefer not to say</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="artisan-age">Age *</label>
+                  <input id="artisan-age" data-required type="number" min="18" max="75" placeholder="Enter your age" />
+                </div>
+              </div>
+
+              <!-- EMPLOYMENT + SUSTAINABILITY -->
+              <div class="form-grid">
+                <div class="field">
+                  <label for="artisan-employment-status">Employment Status *</label>
+                  <select id="artisan-employment-status" data-required>
+                    <option value="">Select employment status</option>
+                    <option value="self-employed">Self-employed</option>
+                    <option value="employed">Employed</option>
+                    <option value="unemployed">Unemployed</option>
+                    <option value="business-owner">Business Owner</option>
+                    <option value="artisan">Artisan / Skilled Worker</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="artisan-sustainability-interest">Sustainability Interest *</label>
+                  <select id="artisan-sustainability-interest" data-required>
+                    <option value="">Select sustainability interest</option>
+                    <option value="green-energy">Green Energy</option>
+                    <option value="waste-reduction">Waste Reduction</option>
+                    <option value="recycling">Recycling</option>
+                    <option value="clean-production">Clean Production</option>
+                    <option value="sustainable-materials">Sustainable Materials</option>
+                    <option value="general-sustainability">General Sustainability</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- BUSINESS DESCRIPTION -->
+              <div class="field">
+                <label for="artisan-message">Business Description *</label>
+                <textarea
+                  id="artisan-message"
+                  data-required
+                  placeholder="Describe your services, years of experience, and customer focus."
+                ></textarea>
+              </div>
+
+              <button class="btn btn-primary" type="submit">Register on Artisan 360</button>
+              <div class="notice"></div>
+            </form>
+          </div>
+
+          <!-- =========================
+          SECTION: CORPORATE PARTNERSHIP FORM
+          ========================= -->
+          <div class="tab-content" id="tab-partner">
+            <form id="partnerForm">
+              <!-- CONTACT IDENTITY -->
+              <div class="form-grid">
+                <div class="field">
+                  <label for="partner-name">Full Name *</label>
+                  <input id="partner-name" data-required type="text" placeholder="Enter your full name" />
+                </div>
+                <div class="field">
+                  <label for="org">Organization *</label>
+                  <input id="org" data-required type="text" placeholder="Organization or institution" />
+                </div>
+              </div>
+
+              <!-- EMAIL + PHONE -->
+              <div class="form-grid">
+                <div class="field">
+                  <label for="corp-email">Corporate Email *</label>
+                  <input id="corp-email" data-required type="email" placeholder="name@company.com" />
+                </div>
+                <div class="field">
+                  <label for="partner-phone">Phone Number *</label>
+                  <input id="partner-phone" data-required type="tel" placeholder="+234..." />
+                </div>
+              </div>
+
+              <!-- INTEREST + LOCATION -->
+              <div class="form-grid">
+                <div class="field">
+                  <label for="interest">Partnership Interest *</label>
+                  <select id="interest" data-required>
+                    <option value="">Select partnership interest</option>
+                    <option>Funding</option>
+                    <option>Hardware Donation</option>
+                    <option>Curriculum Support</option>
+                    <option>Data / Research Collaboration</option>
+                    <option>Employment Pipeline Support</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="partner-location-detail">Location Detail *</label>
+                  <input
+                    id="partner-location-detail"
+                    data-required
+                    type="text"
+                    placeholder="City, State, Country or local office location"
+                  />
+                </div>
+              </div>
+
+              <!-- DEMOGRAPHIC INFORMATION -->
+              <div class="form-grid">
+                <div class="field">
+                  <label for="partner-gender">Gender *</label>
+                  <select id="partner-gender" data-required>
+                    <option value="">Select gender</option>
+                    <option value="female">Female</option>
+                    <option value="male">Male</option>
+                    <option value="other">Other</option>
+                    <option value="prefer-not-to-say">Prefer not to say</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="partner-age">Age *</label>
+                  <input id="partner-age" data-required type="number" min="18" max="80" placeholder="Enter your age" />
+                </div>
+              </div>
+
+              <!-- EMPLOYMENT + SUSTAINABILITY -->
+              <div class="form-grid">
+                <div class="field">
+                  <label for="partner-employment-status">Employment Status / Role *</label>
+                  <select id="partner-employment-status" data-required>
+                    <option value="">Select status / role</option>
+                    <option value="employed">Employed</option>
+                    <option value="executive">Executive</option>
+                    <option value="manager">Manager</option>
+                    <option value="consultant">Consultant</option>
+                    <option value="business-owner">Business Owner</option>
+                    <option value="foundation-lead">Foundation / CSR Lead</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="partner-sustainability-interest">Sustainability Interest *</label>
+                  <select id="partner-sustainability-interest" data-required>
+                    <option value="">Select sustainability interest</option>
+                    <option value="education">Education</option>
+                    <option value="decent-work">Decent Work</option>
+                    <option value="green-skills">Green Skills</option>
+                    <option value="msme-growth">MSME Growth</option>
+                    <option value="climate-action">Climate Action</option>
+                    <option value="general-esg">General ESG / Sustainability</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- MESSAGE -->
+              <div class="field">
+                <label for="partner-message">Message *</label>
+                <textarea
+                  id="partner-message"
+                  data-required
+                  placeholder="Tell us how you'd like to support the Accelerator."
+                ></textarea>
+              </div>
+
+              <button class="btn btn-primary" type="submit">Initiate Partnership</button>
+              <div class="notice"></div>
+            </form>
+          </div>
+        </div>
+
+        <!-- =========================
+        SECTION: CONVERSION GOALS
+        ========================= -->
+        <div class="three-col reveal" style="margin-top: 28px;">
+          <article class="timeline-card">
+            <h4>Youth Conversion Goal</h4>
+            <p>Make the path to application clear, motivating, and low-friction for first-time users.</p>
+          </article>
+
+          <article class="timeline-card">
+            <h4>Artisan Conversion Goal</h4>
+            <p>Show immediate value: visibility, trust, neighborhood discovery, and future financing readiness.</p>
+          </article>
+
+          <article class="timeline-card">
+            <h4>Sponsor Conversion Goal</h4>
+            <p>Signal credibility, measurable impact, and governance discipline from the first click.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- =========================
+  SECTION: FOOTER
+  ========================= -->
+  <footer class="footer">
+    <div class="container footer-shell">
+      <div>
+        <strong>Optimity Impact Solutions</strong><br />
+        Ifako-Ijaiye 2030 Accelerator
+      </div>
+      <div>
+        Become part of a measurable pipeline for local growth and opportunity.
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
