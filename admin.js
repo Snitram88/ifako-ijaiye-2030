@@ -1,6 +1,11 @@
 /* ======================
 AUTH CHECK
 ====================== */
+/* ======================
+API BASE URL
+====================== */
+
+const API_BASE = "https://ifako-ijaiye-2030.onrender.com";
 
 const token = localStorage.getItem("adminToken");
 
@@ -360,7 +365,7 @@ LOAD DATA
 ====================== */
 
 async function loadYouth() {
-  const data = await secureFetch("http://localhost:5000/api/admin/youth");
+  const data = await secureFetch(API_BASE + "/api/admin/youth");
   if (!data) return;
 
   youthData = data;
@@ -372,7 +377,7 @@ async function loadYouth() {
 }
 
 async function loadArtisans() {
-  const data = await secureFetch("http://localhost:5000/api/admin/artisans");
+  const data = await secureFetch(API_BASE + "/api/admin/artisans");
   if (!data) return;
 
   artisanData = data;
@@ -384,7 +389,7 @@ async function loadArtisans() {
 }
 
 async function loadPartners() {
-  const data = await secureFetch("http://localhost:5000/api/admin/partners");
+  const data = await secureFetch(API_BASE + "/api/admin/partners");
   if (!data) return;
 
   partnerData = data;
@@ -488,7 +493,7 @@ async function updateStatus(type, id) {
 
   const status = selectEl.value;
 
-  const result = await secureFetch(`http://localhost:5000/api/admin/${type}/${id}/status`, {
+  const result = await secureFetch(`${API_BASE}/api/admin/${type}/${id}/status`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -515,7 +520,7 @@ async function saveNotes(type, id, silent = false) {
     setNoteStatus(type, id, "Saving...", "saving");
   }
 
-  const result = await secureFetch(`http://localhost:5000/api/admin/${type}/${id}/notes`, {
+  const result = await secureFetch(`${API_BASE}/api/admin/${type}/${id}/notes`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -558,7 +563,7 @@ async function assignAdmin(type, id) {
 
   const admin = adminEl.value;
 
-  const result = await secureFetch(`http://localhost:5000/api/admin/${type}/${id}/assign`, {
+  const result = await secureFetch(`${API_BASE}/api/admin/${type}/${id}/assign`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",

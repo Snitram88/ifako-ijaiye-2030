@@ -7,6 +7,12 @@ document.addEventListener("DOMContentLoaded", function () {
   highlightActiveNav();
 });
 
+/* =========================
+SECTION: API BASE URL
+========================= */
+
+const API_BASE = "https://ifako-ijaiye-2030.onrender.com";
+
 function setupMobileNav() {
   const mobileToggle = document.getElementById("mobileToggle");
   const navLinks = document.getElementById("navLinks");
@@ -269,7 +275,7 @@ function setupBackendForms() {
       };
 
       try {
-        const result = await postFormData("http://localhost:5000/api/youth", payload);
+        const result = await postFormData(API_BASE + "/api/youth", payload);
 
         if (result.success) {
           showNotice(youthForm, "success", result.message);
@@ -302,7 +308,7 @@ function setupBackendForms() {
       };
 
       try {
-        const result = await postFormData("http://localhost:5000/api/artisan", payload);
+        const result = await postFormData(API_BASE + "/api/artisan", payload);
 
         if (result.success) {
           showNotice(artisanForm, "success", result.message);
@@ -335,7 +341,7 @@ function setupBackendForms() {
       };
 
       try {
-        const result = await postFormData("http://localhost:5000/api/partner", payload);
+        const result = await postFormData(API_BASE + "/api/partner", payload);
 
         if (result.success) {
           showNotice(partnerForm, "success", result.message);
@@ -666,8 +672,8 @@ function setupBackendForms() {
         goals: document.getElementById("youth-message").value.trim(),
       };
 
-      try {
-        const result = await postFormData("http://localhost:5000/api/youth", payload);
+            try {
+        const result = await postFormData(API_BASE + "/api/youth", payload);
 
         if (result.success) {
           showNotice(youthForm, "success", result.message);
@@ -709,7 +715,7 @@ function setupBackendForms() {
       };
 
       try {
-        const result = await postFormData("http://localhost:5000/api/artisan", payload);
+        const result = await postFormData(API_BASE + "/api/artisan", payload);
 
         if (result.success) {
           showNotice(artisanForm, "success", result.message);
@@ -751,7 +757,7 @@ function setupBackendForms() {
       };
 
       try {
-        const result = await postFormData("http://localhost:5000/api/partner", payload);
+        const result = await postFormData(API_BASE + "/api/partner", payload);
 
         if (result.success) {
           showNotice(partnerForm, "success", result.message);

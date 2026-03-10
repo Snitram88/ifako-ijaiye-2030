@@ -1,9 +1,23 @@
+/* ======================
+API BASE URL
+====================== */
+
+const API_BASE = "https://ifako-ijaiye-2030.onrender.com";
+
+/* ======================
+CHART INSTANCES
+====================== */
+
 let growthChart = null;
 let approvalChart = null;
 
+/* ======================
+LOAD DASHBOARD
+====================== */
+
 async function loadDashboard() {
   try {
-    const res = await fetch("http://localhost:5000/api/public/impact");
+    const res = await fetch(API_BASE + "/api/public/impact");
     const data = await res.json();
 
     if (!data.success || !data.impact) {
@@ -42,6 +56,10 @@ async function loadDashboard() {
     console.error("Impact dashboard error:", error);
   }
 }
+
+/* ======================
+CREATE CHARTS
+====================== */
 
 function createCharts(impact) {
   const growthCanvas = document.getElementById("growthChart");
@@ -106,6 +124,10 @@ function createCharts(impact) {
     },
   });
 }
+
+/* ======================
+INITIAL LOAD
+====================== */
 
 loadDashboard();
 setInterval(loadDashboard, 20000);
