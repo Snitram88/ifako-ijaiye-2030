@@ -1,8 +1,8 @@
 const express = require("express");
-const mysql = require("mysql2");
 const cors = require("cors");
 const nodemailer = require("nodemailer");
 const jwt = require("jsonwebtoken");
+const { Pool } = require("pg");
 require("dotenv").config();
 
 const app = express();
@@ -16,20 +16,22 @@ app.use(express.urlencoded({ extended: true }));
 SECTION: DATABASE CONNECTION
 ========================= */
 
-const db = mysql.createConnection({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false,
+  },
 });
 
-db.connect((error) => {
-  if (error) {
-    console.error("MySQL connection failed:", error);
-    return;
-  }
-  console.log("Connected to MySQL database");
-});
+pool
+  .connect()
+  .then((client) => {
+    console.log("Connected to PostgreSQL database");
+    client.release();
+  })
+  .catch((error) => {
+    console.error("PostgreSQL connection failed:", error);
+  });
 
 /* =========================
 SECTION: EMAIL CONFIG
@@ -220,12 +222,11 @@ app.post("/api/youth", async (req, res) => {
       sustainability_interest,
       goals
     )
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
   `;
 
-  db.query(
-    sql,
-    [
+  try {
+    await pool.query(sql, [
       fullName,
       email,
       phone,
@@ -236,48 +237,45 @@ app.post("/api/youth", async (req, res) => {
       locationDetail,
       sustainabilityInterest,
       goals,
-    ],
-    async (error) => {
-      if (error) {
-        console.error("Youth insert error:", error);
-        return res.status(500).json({
-          success: false,
-          message: "Failed to save youth application.",
-        });
-      }
+    ]);
 
-      try {
-        await sendNotificationEmail(
-          "New Youth Application - Ifako-Ijaiye 2030",
-          `
-            <h2>New Youth Application</h2>
-            <p><strong>Name:</strong> ${escapeHtml(fullName)}</p>
-            <p><strong>Email:</strong> ${escapeHtml(email)}</p>
-            <p><strong>Phone:</strong> ${escapeHtml(phone)}</p>
-            <p><strong>Track:</strong> ${escapeHtml(track)}</p>
-            <p><strong>Gender:</strong> ${escapeHtml(gender)}</p>
-            <p><strong>Age:</strong> ${escapeHtml(age)}</p>
-            <p><strong>Employment Status:</strong> ${escapeHtml(employmentStatus)}</p>
-            <p><strong>Location Detail:</strong> ${escapeHtml(locationDetail)}</p>
-            <p><strong>Sustainability Interest:</strong> ${escapeHtml(sustainabilityInterest)}</p>
-            <p><strong>Goals:</strong><br>${escapeHtml(goals)}</p>
-          `
-        );
+    try {
+      await sendNotificationEmail(
+        "New Youth Application - Ifako-Ijaiye 2030",
+        `
+          <h2>New Youth Application</h2>
+          <p><strong>Name:</strong> ${escapeHtml(fullName)}</p>
+          <p><strong>Email:</strong> ${escapeHtml(email)}</p>
+          <p><strong>Phone:</strong> ${escapeHtml(phone)}</p>
+          <p><strong>Track:</strong> ${escapeHtml(track)}</p>
+          <p><strong>Gender:</strong> ${escapeHtml(gender)}</p>
+          <p><strong>Age:</strong> ${escapeHtml(age)}</p>
+          <p><strong>Employment Status:</strong> ${escapeHtml(employmentStatus)}</p>
+          <p><strong>Location Detail:</strong> ${escapeHtml(locationDetail)}</p>
+          <p><strong>Sustainability Interest:</strong> ${escapeHtml(sustainabilityInterest)}</p>
+          <p><strong>Goals:</strong><br>${escapeHtml(goals)}</p>
+        `
+      );
 
-        return res.json({
-          success: true,
-          message: "Youth application submitted successfully.",
-        });
-      } catch (mailError) {
-        console.error("Youth email error:", mailError);
+      return res.json({
+        success: true,
+        message: "Youth application submitted successfully.",
+      });
+    } catch (mailError) {
+      console.error("Youth email error:", mailError);
 
-        return res.json({
-          success: true,
-          message: "Application saved, but email notification failed.",
-        });
-      }
+      return res.json({
+        success: true,
+        message: "Application saved, but email notification failed.",
+      });
     }
-  );
+  } catch (error) {
+    console.error("Youth insert error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to save youth application.",
+    });
+  }
 });
 
 /* =========================
@@ -333,12 +331,11 @@ app.post("/api/artisan", async (req, res) => {
       sustainability_interest,
       description
     )
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
   `;
 
-  db.query(
-    sql,
-    [
+  try {
+    await pool.query(sql, [
       businessName,
       contactName,
       email,
@@ -350,49 +347,46 @@ app.post("/api/artisan", async (req, res) => {
       locationDetail,
       sustainabilityInterest,
       description,
-    ],
-    async (error) => {
-      if (error) {
-        console.error("Artisan insert error:", error);
-        return res.status(500).json({
-          success: false,
-          message: "Failed to save artisan registration.",
-        });
-      }
+    ]);
 
-      try {
-        await sendNotificationEmail(
-          "New Artisan Registration - Ifako-Ijaiye 2030",
-          `
-            <h2>New Artisan Registration</h2>
-            <p><strong>Business:</strong> ${escapeHtml(businessName)}</p>
-            <p><strong>Contact:</strong> ${escapeHtml(contactName)}</p>
-            <p><strong>Email:</strong> ${escapeHtml(email)}</p>
-            <p><strong>Phone:</strong> ${escapeHtml(phone)}</p>
-            <p><strong>Category:</strong> ${escapeHtml(category)}</p>
-            <p><strong>Gender:</strong> ${escapeHtml(gender)}</p>
-            <p><strong>Age:</strong> ${escapeHtml(age)}</p>
-            <p><strong>Employment Status:</strong> ${escapeHtml(employmentStatus)}</p>
-            <p><strong>Location Detail:</strong> ${escapeHtml(locationDetail)}</p>
-            <p><strong>Sustainability Interest:</strong> ${escapeHtml(sustainabilityInterest)}</p>
-            <p><strong>Description:</strong><br>${escapeHtml(description)}</p>
-          `
-        );
+    try {
+      await sendNotificationEmail(
+        "New Artisan Registration - Ifako-Ijaiye 2030",
+        `
+          <h2>New Artisan Registration</h2>
+          <p><strong>Business:</strong> ${escapeHtml(businessName)}</p>
+          <p><strong>Contact:</strong> ${escapeHtml(contactName)}</p>
+          <p><strong>Email:</strong> ${escapeHtml(email)}</p>
+          <p><strong>Phone:</strong> ${escapeHtml(phone)}</p>
+          <p><strong>Category:</strong> ${escapeHtml(category)}</p>
+          <p><strong>Gender:</strong> ${escapeHtml(gender)}</p>
+          <p><strong>Age:</strong> ${escapeHtml(age)}</p>
+          <p><strong>Employment Status:</strong> ${escapeHtml(employmentStatus)}</p>
+          <p><strong>Location Detail:</strong> ${escapeHtml(locationDetail)}</p>
+          <p><strong>Sustainability Interest:</strong> ${escapeHtml(sustainabilityInterest)}</p>
+          <p><strong>Description:</strong><br>${escapeHtml(description)}</p>
+        `
+      );
 
-        return res.json({
-          success: true,
-          message: "Artisan registration submitted successfully.",
-        });
-      } catch (mailError) {
-        console.error("Artisan email error:", mailError);
+      return res.json({
+        success: true,
+        message: "Artisan registration submitted successfully.",
+      });
+    } catch (mailError) {
+      console.error("Artisan email error:", mailError);
 
-        return res.json({
-          success: true,
-          message: "Registration saved but email failed",
-        });
-      }
+      return res.json({
+        success: true,
+        message: "Registration saved but email failed",
+      });
     }
-  );
+  } catch (error) {
+    console.error("Artisan insert error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to save artisan registration.",
+    });
+  }
 });
 
 /* =========================
@@ -448,12 +442,11 @@ app.post("/api/partner", async (req, res) => {
       sustainability_interest,
       message
     )
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
   `;
 
-  db.query(
-    sql,
-    [
+  try {
+    await pool.query(sql, [
       fullName,
       organization,
       email,
@@ -465,108 +458,105 @@ app.post("/api/partner", async (req, res) => {
       locationDetail,
       sustainabilityInterest,
       message,
-    ],
-    async (error) => {
-      if (error) {
-        console.error("Partner insert error:", error);
-        return res.status(500).json({
-          success: false,
-          message: "Failed to save partnership inquiry.",
-        });
-      }
+    ]);
 
-      try {
-        await sendNotificationEmail(
-          "New Partnership Inquiry - Ifako-Ijaiye 2030",
-          `
-            <h2>New Partnership Inquiry</h2>
-            <p><strong>Name:</strong> ${escapeHtml(fullName)}</p>
-            <p><strong>Organization:</strong> ${escapeHtml(organization)}</p>
-            <p><strong>Email:</strong> ${escapeHtml(email)}</p>
-            <p><strong>Phone:</strong> ${escapeHtml(phone)}</p>
-            <p><strong>Interest:</strong> ${escapeHtml(interest)}</p>
-            <p><strong>Gender:</strong> ${escapeHtml(gender)}</p>
-            <p><strong>Age:</strong> ${escapeHtml(age)}</p>
-            <p><strong>Employment Status:</strong> ${escapeHtml(employmentStatus)}</p>
-            <p><strong>Location Detail:</strong> ${escapeHtml(locationDetail)}</p>
-            <p><strong>Sustainability Interest:</strong> ${escapeHtml(sustainabilityInterest)}</p>
-            <p><strong>Message:</strong><br>${escapeHtml(message)}</p>
-          `
-        );
+    try {
+      await sendNotificationEmail(
+        "New Partnership Inquiry - Ifako-Ijaiye 2030",
+        `
+          <h2>New Partnership Inquiry</h2>
+          <p><strong>Name:</strong> ${escapeHtml(fullName)}</p>
+          <p><strong>Organization:</strong> ${escapeHtml(organization)}</p>
+          <p><strong>Email:</strong> ${escapeHtml(email)}</p>
+          <p><strong>Phone:</strong> ${escapeHtml(phone)}</p>
+          <p><strong>Interest:</strong> ${escapeHtml(interest)}</p>
+          <p><strong>Gender:</strong> ${escapeHtml(gender)}</p>
+          <p><strong>Age:</strong> ${escapeHtml(age)}</p>
+          <p><strong>Employment Status:</strong> ${escapeHtml(employmentStatus)}</p>
+          <p><strong>Location Detail:</strong> ${escapeHtml(locationDetail)}</p>
+          <p><strong>Sustainability Interest:</strong> ${escapeHtml(sustainabilityInterest)}</p>
+          <p><strong>Message:</strong><br>${escapeHtml(message)}</p>
+        `
+      );
 
-        return res.json({
-          success: true,
-          message: "Partnership inquiry submitted successfully.",
-        });
-      } catch (mailError) {
-        console.error("Partner email error:", mailError);
+      return res.json({
+        success: true,
+        message: "Partnership inquiry submitted successfully.",
+      });
+    } catch (mailError) {
+      console.error("Partner email error:", mailError);
 
-        return res.json({
-          success: true,
-          message: "Saved but email failed",
-        });
-      }
+      return res.json({
+        success: true,
+        message: "Saved but email failed",
+      });
     }
-  );
+  } catch (error) {
+    console.error("Partner insert error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to save partnership inquiry.",
+    });
+  }
 });
 
 /* =========================
 SECTION: PROTECTED ADMIN DATA ROUTES
 ========================= */
 
-app.get("/api/admin/youth", verifyAdmin, (req, res) => {
-  const sql = "SELECT * FROM youth_applications ORDER BY created_at DESC";
+app.get("/api/admin/youth", verifyAdmin, async (_req, res) => {
+  try {
+    const result = await pool.query(
+      "SELECT * FROM youth_applications ORDER BY created_at DESC"
+    );
 
-  db.query(sql, (err, results) => {
-    if (err) {
-      console.error("Admin youth fetch error:", err);
-      return res.status(500).json({
-        success: false,
-        message: "Failed to fetch youth data.",
-      });
-    }
-
-    return res.json(results);
-  });
+    return res.json(result.rows);
+  } catch (err) {
+    console.error("Admin youth fetch error:", err);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch youth data.",
+    });
+  }
 });
 
-app.get("/api/admin/artisans", verifyAdmin, (req, res) => {
-  const sql = "SELECT * FROM artisan_registrations ORDER BY created_at DESC";
+app.get("/api/admin/artisans", verifyAdmin, async (_req, res) => {
+  try {
+    const result = await pool.query(
+      "SELECT * FROM artisan_registrations ORDER BY created_at DESC"
+    );
 
-  db.query(sql, (err, results) => {
-    if (err) {
-      console.error("Admin artisan fetch error:", err);
-      return res.status(500).json({
-        success: false,
-        message: "Failed to fetch artisan data.",
-      });
-    }
-
-    return res.json(results);
-  });
+    return res.json(result.rows);
+  } catch (err) {
+    console.error("Admin artisan fetch error:", err);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch artisan data.",
+    });
+  }
 });
 
-app.get("/api/admin/partners", verifyAdmin, (req, res) => {
-  const sql = "SELECT * FROM partner_inquiries ORDER BY created_at DESC";
+app.get("/api/admin/partners", verifyAdmin, async (_req, res) => {
+  try {
+    const result = await pool.query(
+      "SELECT * FROM partner_inquiries ORDER BY created_at DESC"
+    );
 
-  db.query(sql, (err, results) => {
-    if (err) {
-      console.error("Admin partner fetch error:", err);
-      return res.status(500).json({
-        success: false,
-        message: "Failed to fetch partner data.",
-      });
-    }
-
-    return res.json(results);
-  });
+    return res.json(result.rows);
+  } catch (err) {
+    console.error("Admin partner fetch error:", err);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch partner data.",
+    });
+  }
 });
 
 /* =========================
 SECTION: STATUS UPDATE ROUTE
 ========================= */
 
-app.put("/api/admin/:type/:id/status", verifyAdmin, (req, res) => {
+app.put("/api/admin/:type/:id/status", verifyAdmin, async (req, res) => {
   const { type, id } = req.params;
   const { status } = req.body;
 
@@ -588,107 +578,101 @@ app.put("/api/admin/:type/:id/status", verifyAdmin, (req, res) => {
     });
   }
 
-  const fetchSql = `SELECT * FROM ${tableName} WHERE id = ? LIMIT 1`;
+  try {
+    const recordResult = await pool.query(
+      `SELECT * FROM ${tableName} WHERE id = $1 LIMIT 1`,
+      [id]
+    );
 
-  db.query(fetchSql, [id], (fetchError, records) => {
-    if (fetchError) {
-      console.error("Status prefetch error:", fetchError);
-      return res.status(500).json({
-        success: false,
-        message: "Failed to load record before update.",
-      });
-    }
-
-    if (!records.length) {
+    if (!recordResult.rows.length) {
       return res.status(404).json({
         success: false,
         message: "Record not found.",
       });
     }
 
-    const record = records[0];
+    const record = recordResult.rows[0];
     const previousStatus = record.status;
 
-    const updateSql = `UPDATE ${tableName} SET status = ? WHERE id = ?`;
+    await pool.query(
+      `UPDATE ${tableName} SET status = $1 WHERE id = $2`,
+      [status, id]
+    );
 
-    db.query(updateSql, [status, id], async (updateError) => {
-      if (updateError) {
-        console.error("Status update error:", updateError);
-        return res.status(500).json({
-          success: false,
-          message: "Failed to update status.",
-        });
-      }
+    try {
+      const recipientEmail = emailColumn ? record[emailColumn] : null;
+      const recipientName = nameColumn ? record[nameColumn] : "Applicant";
 
-      try {
-        const recipientEmail = emailColumn ? record[emailColumn] : null;
-        const recipientName = nameColumn ? record[nameColumn] : "Applicant";
+      if (recipientEmail && previousStatus !== status) {
+        if (status === "approved") {
+          let subject = "Application Approved - Ifako-Ijaiye 2030 Accelerator";
+          let html = `
+            <h2>Congratulations, ${escapeHtml(recipientName)}!</h2>
+            <p>Your submission to the Ifako-Ijaiye 2030 Accelerator has been <strong>approved</strong>.</p>
+            <p>Our team will contact you with the next steps shortly.</p>
+            <p>Thank you for being part of this pipeline for growth and opportunity.</p>
+          `;
 
-        if (recipientEmail && previousStatus !== status) {
-          if (status === "approved") {
-            let subject = "Application Approved - Ifako-Ijaiye 2030 Accelerator";
-            let html = `
-              <h2>Congratulations, ${escapeHtml(recipientName)}!</h2>
-              <p>Your submission to the Ifako-Ijaiye 2030 Accelerator has been <strong>approved</strong>.</p>
-              <p>Our team will contact you with the next steps shortly.</p>
-              <p>Thank you for being part of this pipeline for growth and opportunity.</p>
-            `;
-
-            if (type === "partners") {
-              subject = "Partnership Inquiry Approved - Ifako-Ijaiye 2030 Accelerator";
-              html = `
-                <h2>Hello ${escapeHtml(recipientName)},</h2>
-                <p>Your partnership inquiry has been <strong>approved</strong>.</p>
-                <p>Our team will reach out to discuss the next phase of engagement.</p>
-                <p>Thank you for supporting localized SDG impact delivery.</p>
-              `;
-            }
-
-            await sendDirectEmail(recipientEmail, subject, html);
-          }
-
-          if (status === "contacted") {
-            let subject = "We Have Reached Your Submission - Ifako-Ijaiye 2030 Accelerator";
-            let html = `
+          if (type === "partners") {
+            subject = "Partnership Inquiry Approved - Ifako-Ijaiye 2030 Accelerator";
+            html = `
               <h2>Hello ${escapeHtml(recipientName)},</h2>
-              <p>Your submission has been reviewed and our team has now marked it as <strong>contacted</strong>.</p>
-              <p>Please monitor your email and phone for follow-up communication.</p>
+              <p>Your partnership inquiry has been <strong>approved</strong>.</p>
+              <p>Our team will reach out to discuss the next phase of engagement.</p>
+              <p>Thank you for supporting localized SDG impact delivery.</p>
             `;
-
-            if (type === "partners") {
-              subject = "Your Partnership Inquiry Is Being Processed";
-              html = `
-                <h2>Hello ${escapeHtml(recipientName)},</h2>
-                <p>Your partnership inquiry is now being actively processed by our team.</p>
-                <p>We will follow up with you shortly.</p>
-              `;
-            }
-
-            await sendDirectEmail(recipientEmail, subject, html);
           }
+
+          await sendDirectEmail(recipientEmail, subject, html);
         }
 
-        return res.json({
-          success: true,
-          message: "Status updated successfully.",
-        });
-      } catch (mailError) {
-        console.error("Automated status email error:", mailError);
+        if (status === "contacted") {
+          let subject = "We Have Reached Your Submission - Ifako-Ijaiye 2030 Accelerator";
+          let html = `
+            <h2>Hello ${escapeHtml(recipientName)},</h2>
+            <p>Your submission has been reviewed and our team has now marked it as <strong>contacted</strong>.</p>
+            <p>Please monitor your email and phone for follow-up communication.</p>
+          `;
 
-        return res.json({
-          success: true,
-          message: "Status updated, but automated email failed.",
-        });
+          if (type === "partners") {
+            subject = "Your Partnership Inquiry Is Being Processed";
+            html = `
+              <h2>Hello ${escapeHtml(recipientName)},</h2>
+              <p>Your partnership inquiry is now being actively processed by our team.</p>
+              <p>We will follow up with you shortly.</p>
+            `;
+          }
+
+          await sendDirectEmail(recipientEmail, subject, html);
+        }
       }
+
+      return res.json({
+        success: true,
+        message: "Status updated successfully.",
+      });
+    } catch (mailError) {
+      console.error("Automated status email error:", mailError);
+
+      return res.json({
+        success: true,
+        message: "Status updated, but automated email failed.",
+      });
+    }
+  } catch (error) {
+    console.error("Status update error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to update status.",
     });
-  });
+  }
 });
 
 /* =========================
 SECTION: NOTES UPDATE ROUTE
 ========================= */
 
-app.put("/api/admin/:type/:id/notes", verifyAdmin, (req, res) => {
+app.put("/api/admin/:type/:id/notes", verifyAdmin, async (req, res) => {
   const { type, id } = req.params;
   const { notes } = req.body;
 
@@ -701,29 +685,30 @@ app.put("/api/admin/:type/:id/notes", verifyAdmin, (req, res) => {
     });
   }
 
-  const sql = `UPDATE ${tableName} SET notes = ? WHERE id = ?`;
-
-  db.query(sql, [notes, id], (error) => {
-    if (error) {
-      console.error("Notes update error:", error);
-      return res.status(500).json({
-        success: false,
-        message: "Failed to update notes.",
-      });
-    }
+  try {
+    await pool.query(
+      `UPDATE ${tableName} SET notes = $1 WHERE id = $2`,
+      [notes, id]
+    );
 
     return res.json({
       success: true,
       message: "Notes updated successfully.",
     });
-  });
+  } catch (error) {
+    console.error("Notes update error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to update notes.",
+    });
+  }
 });
 
 /* =========================
 SECTION: ASSIGNED ADMIN UPDATE ROUTE
 ========================= */
 
-app.put("/api/admin/:type/:id/assign", verifyAdmin, (req, res) => {
+app.put("/api/admin/:type/:id/assign", verifyAdmin, async (req, res) => {
   const { type, id } = req.params;
   const { admin } = req.body;
 
@@ -736,86 +721,80 @@ app.put("/api/admin/:type/:id/assign", verifyAdmin, (req, res) => {
     });
   }
 
-  const sql = `UPDATE ${tableName} SET assigned_admin = ? WHERE id = ?`;
-
-  db.query(sql, [admin, id], (error) => {
-    if (error) {
-      console.error("Assign admin error:", error);
-      return res.status(500).json({
-        success: false,
-        message: "Failed to assign admin.",
-      });
-    }
+  try {
+    await pool.query(
+      `UPDATE ${tableName} SET assigned_admin = $1 WHERE id = $2`,
+      [admin, id]
+    );
 
     return res.json({
       success: true,
       message: "Assigned admin updated successfully.",
     });
-  });
+  } catch (error) {
+    console.error("Assign admin error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to assign admin.",
+    });
+  }
 });
 
 /* =========================
 SECTION: PUBLIC IMPACT API
 ========================= */
 
-app.get("/api/public/impact", (req, res) => {
+app.get("/api/public/impact", async (_req, res) => {
   const sql = `
     SELECT
       (SELECT COUNT(*) FROM youth_applications) AS youth_total,
-      (SELECT COUNT(*) FROM youth_applications WHERE status='approved') AS youth_approved,
-
+      (SELECT COUNT(*) FROM youth_applications WHERE status = 'approved') AS youth_approved,
       (SELECT COUNT(*) FROM artisan_registrations) AS artisan_total,
-      (SELECT COUNT(*) FROM artisan_registrations WHERE status='approved') AS artisan_approved,
-
+      (SELECT COUNT(*) FROM artisan_registrations WHERE status = 'approved') AS artisan_approved,
       (SELECT COUNT(*) FROM partner_inquiries) AS partner_total,
-      (SELECT COUNT(*) FROM partner_inquiries WHERE status='approved') AS partner_approved
+      (SELECT COUNT(*) FROM partner_inquiries WHERE status = 'approved') AS partner_approved
   `;
 
-  db.query(sql, (err, result) => {
-    if (err) {
-      console.error("Public impact API error:", err);
-      return res.status(500).json({ success: false });
-    }
+  try {
+    const result = await pool.query(sql);
+    const r = result.rows[0];
 
-    const r = result[0];
+    const youthTotal = Number(r.youth_total || 0);
+    const youthApproved = Number(r.youth_approved || 0);
+    const artisanTotal = Number(r.artisan_total || 0);
+    const artisanApproved = Number(r.artisan_approved || 0);
+    const partnerTotal = Number(r.partner_total || 0);
+    const partnerApproved = Number(r.partner_approved || 0);
 
-    const total =
-      r.youth_total +
-      r.artisan_total +
-      r.partner_total;
+    const total = youthTotal + artisanTotal + partnerTotal;
+    const approved = youthApproved + artisanApproved + partnerApproved;
 
-    const approved =
-      r.youth_approved +
-      r.artisan_approved +
-      r.partner_approved;
-
-    const sdg4 = r.youth_approved;
-    const sdg8 = r.artisan_total;
-    const sdg9 = r.youth_total;
-    const jobs = r.artisan_total * 2;
+    const sdg4 = youthApproved;
+    const sdg8 = artisanTotal;
+    const sdg9 = youthTotal;
+    const jobs = artisanTotal * 2;
 
     return res.json({
       success: true,
       impact: {
-        youth_total: r.youth_total,
-        youth_approved: r.youth_approved,
-
-        artisan_total: r.artisan_total,
-        artisan_approved: r.artisan_approved,
-
-        partner_total: r.partner_total,
-        partner_approved: r.partner_approved,
-
+        youth_total: youthTotal,
+        youth_approved: youthApproved,
+        artisan_total: artisanTotal,
+        artisan_approved: artisanApproved,
+        partner_total: partnerTotal,
+        partner_approved: partnerApproved,
         total,
         approved,
-
         sdg4,
         sdg8,
         sdg9,
         jobs,
       },
     });
-  });
+  } catch (err) {
+    console.error("Public impact API error:", err);
+    return res.status(500).json({ success: false });
+  }
 });
 
 /* =========================
