@@ -34,16 +34,12 @@ pool
   });
 
 /* =========================
-SECTION: EMAIL CONFIG
+SECTION: EMAIL CONFIG (RESEND)
 ========================= */
 
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-});
+const { Resend } = require("resend");
+
+const resend = new Resend(process.env.re_ftr8A8dN_2im1xVAus4ZadKT8mckaPDBq);
 
 /* =========================
 SECTION: HELPERS
@@ -58,21 +54,29 @@ function escapeHtml(value = "") {
     .replace(/'/g, "&#039;");
 }
 
+/* =========================
+ADMIN NOTIFICATION EMAIL
+========================= */
+
 async function sendNotificationEmail(subject, html) {
-  await transporter.sendMail({
-    from: `"Ifako-Ijaiye 2030 Accelerator" <${process.env.EMAIL_USER}>`,
-    to: process.env.EMAIL_TO,
+  await resend.emails.send({
+    from: "Ifako-Ijaiye 2030 <onboarding@resend.dev>",
+    to: [process.env.EMAIL_TO],
     subject,
     html,
   });
 }
 
+/* =========================
+DIRECT EMAIL TO APPLICANT
+========================= */
+
 async function sendDirectEmail(to, subject, html) {
   if (!to) return;
 
-  await transporter.sendMail({
-    from: `"Ifako-Ijaiye 2030 Accelerator" <${process.env.EMAIL_USER}>`,
-    to,
+  await resend.emails.send({
+    from: "Ifako-Ijaiye 2030 <onboarding@resend.dev>",
+    to: [to],
     subject,
     html,
   });
