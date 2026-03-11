@@ -228,18 +228,39 @@ app.post("/api/youth", async (req, res) => {
   `;
 
   try {
-    await pool.query(sql, [
-      fullName,
-      email,
-      phone,
-      track,
-      gender,
-      age,
-      employmentStatus,
-      locationDetail,
-      sustainabilityInterest,
-      goals,
-    ]);
+
+  /* =========================
+  DUPLICATE CHECK
+  ========================= */
+
+  const existing = await pool.query(
+    "SELECT id FROM youth_applications WHERE email=$1 LIMIT 1",
+    [email]
+  );
+
+  if (existing.rows.length > 0) {
+    return res.json({
+      success: false,
+      message: "You have already submitted an application.",
+    });
+  }
+
+  /* =========================
+  INSERT APPLICATION
+  ========================= */
+
+  await pool.query(sql, [
+    fullName,
+    email,
+    phone,
+    track,
+    gender,
+    age,
+    employmentStatus,
+    locationDetail,
+    sustainabilityInterest,
+    goals,
+  ]);
 
     try {
       await sendNotificationEmail(
@@ -337,19 +358,32 @@ app.post("/api/artisan", async (req, res) => {
   `;
 
   try {
-    await pool.query(sql, [
-      businessName,
-      contactName,
-      email,
-      phone,
-      category,
-      gender,
-      age,
-      employmentStatus,
-      locationDetail,
-      sustainabilityInterest,
-      description,
-    ]);
+
+  const existing = await pool.query(
+    "SELECT id FROM artisan_registrations WHERE email=$1 LIMIT 1",
+    [email]
+  );
+
+  if (existing.rows.length > 0) {
+    return res.json({
+      success: false,
+      message: "This email already submitted an artisan registration.",
+    });
+  }
+
+  await pool.query(sql, [
+    businessName,
+    contactName,
+    email,
+    phone,
+    category,
+    gender,
+    age,
+    employmentStatus,
+    locationDetail,
+    sustainabilityInterest,
+    description,
+  ]);
 
     try {
       await sendNotificationEmail(
@@ -448,19 +482,32 @@ app.post("/api/partner", async (req, res) => {
   `;
 
   try {
-    await pool.query(sql, [
-      fullName,
-      organization,
-      email,
-      phone,
-      interest,
-      gender,
-      age,
-      employmentStatus,
-      locationDetail,
-      sustainabilityInterest,
-      message,
-    ]);
+
+  const existing = await pool.query(
+    "SELECT id FROM partner_inquiries WHERE email=$1 LIMIT 1",
+    [email]
+  );
+
+  if (existing.rows.length > 0) {
+    return res.json({
+      success: false,
+      message: "You already submitted a partnership request.",
+    });
+  }
+
+  await pool.query(sql, [
+    fullName,
+    organization,
+    email,
+    phone,
+    interest,
+    gender,
+    age,
+    employmentStatus,
+    locationDetail,
+    sustainabilityInterest,
+    message,
+  ]);
 
     try {
       await sendNotificationEmail(
