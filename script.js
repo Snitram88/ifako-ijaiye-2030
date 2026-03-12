@@ -640,57 +640,26 @@ async function postFormData(url, data) {
 }
 
 function setupBackendForms() {
- /* =========================
-SECTION: FORM SUBMISSION HANDLERS
-========================= */
-
-function setupBackendForms() {
-
+  /* =========================
+  SECTION: FORM SUBMISSION HANDLERS
+  ========================= */
   const youthForm = document.getElementById("youthForm");
   const artisanForm = document.getElementById("artisanForm");
   const partnerForm = document.getElementById("partnerForm");
 
-  let youthSubmitting = false;
-  let artisanSubmitting = false;
-  let partnerSubmitting = false;
-
   /* =========================
   SUBSECTION: YOUTH FORM SUBMISSION
   ========================= */
-
   if (youthForm) {
-
     youthForm.addEventListener("submit", async function (event) {
-
       event.preventDefault();
 
-      if (youthSubmitting) return;
-      youthSubmitting = true;
-
-      const submitBtn = youthForm.querySelector("button[type='submit']");
-      if (submitBtn) {
-        submitBtn.disabled = true;
-        submitBtn.dataset.originalText = submitBtn.textContent;
-        submitBtn.textContent = "Submitting...";
-      }
-
       if (!validateRequired(youthForm)) {
-
         showNotice(youthForm, "error", "Please complete all required fields.");
-
-        youthSubmitting = false;
-
-        if (submitBtn) {
-          submitBtn.disabled = false;
-          submitBtn.textContent = submitBtn.dataset.originalText;
-        }
-
         return;
-
       }
 
       const payload = {
-
         fullName: document.getElementById("youth-name").value.trim(),
         email: document.getElementById("youth-email").value.trim(),
         phone: document.getElementById("youth-phone").value.trim(),
@@ -701,79 +670,37 @@ function setupBackendForms() {
         locationDetail: document.getElementById("youth-location-detail").value.trim(),
         sustainabilityInterest: document.getElementById("youth-sustainability-interest").value.trim(),
         goals: document.getElementById("youth-message").value.trim(),
-
       };
 
-      try {
-
+            try {
         const result = await postFormData(API_BASE + "/api/youth", payload);
 
         if (result.success) {
-
           showNotice(youthForm, "success", result.message);
           youthForm.reset();
-
         } else {
-
           showNotice(youthForm, "error", result.message || "Submission failed.");
-
         }
-
       } catch (error) {
-
         console.error(error);
         showNotice(youthForm, "error", "Could not connect to the server.");
-
       }
-
-      youthSubmitting = false;
-
-      if (submitBtn) {
-        submitBtn.disabled = false;
-        submitBtn.textContent = submitBtn.dataset.originalText;
-      }
-
     });
-
   }
 
   /* =========================
   SUBSECTION: ARTISAN FORM SUBMISSION
   ========================= */
-
   if (artisanForm) {
-
     artisanForm.addEventListener("submit", async function (event) {
-
       event.preventDefault();
 
-      if (artisanSubmitting) return;
-      artisanSubmitting = true;
-
-      const submitBtn = artisanForm.querySelector("button[type='submit']");
-      if (submitBtn) {
-        submitBtn.disabled = true;
-        submitBtn.dataset.originalText = submitBtn.textContent;
-        submitBtn.textContent = "Submitting...";
-      }
-
       if (!validateRequired(artisanForm)) {
-
         showNotice(artisanForm, "error", "Please complete all required fields.");
-
-        artisanSubmitting = false;
-
-        if (submitBtn) {
-          submitBtn.disabled = false;
-          submitBtn.textContent = submitBtn.dataset.originalText;
-        }
-
         return;
-
       }
 
       const payload = {
-
         businessName: document.getElementById("biz-name").value.trim(),
         contactName: document.getElementById("artisan-name").value.trim(),
         email: document.getElementById("artisan-email").value.trim(),
@@ -785,79 +712,37 @@ function setupBackendForms() {
         locationDetail: document.getElementById("artisan-location-detail").value.trim(),
         sustainabilityInterest: document.getElementById("artisan-sustainability-interest").value.trim(),
         description: document.getElementById("artisan-message").value.trim(),
-
       };
 
       try {
-
         const result = await postFormData(API_BASE + "/api/artisan", payload);
 
         if (result.success) {
-
           showNotice(artisanForm, "success", result.message);
           artisanForm.reset();
-
         } else {
-
           showNotice(artisanForm, "error", result.message || "Submission failed.");
-
         }
-
       } catch (error) {
-
         console.error(error);
         showNotice(artisanForm, "error", "Could not connect to the server.");
-
       }
-
-      artisanSubmitting = false;
-
-      if (submitBtn) {
-        submitBtn.disabled = false;
-        submitBtn.textContent = submitBtn.dataset.originalText;
-      }
-
     });
-
   }
 
   /* =========================
   SUBSECTION: PARTNER FORM SUBMISSION
   ========================= */
-
   if (partnerForm) {
-
     partnerForm.addEventListener("submit", async function (event) {
-
       event.preventDefault();
 
-      if (partnerSubmitting) return;
-      partnerSubmitting = true;
-
-      const submitBtn = partnerForm.querySelector("button[type='submit']");
-      if (submitBtn) {
-        submitBtn.disabled = true;
-        submitBtn.dataset.originalText = submitBtn.textContent;
-        submitBtn.textContent = "Submitting...";
-      }
-
       if (!validateRequired(partnerForm)) {
-
         showNotice(partnerForm, "error", "Please complete all required fields.");
-
-        partnerSubmitting = false;
-
-        if (submitBtn) {
-          submitBtn.disabled = false;
-          submitBtn.textContent = submitBtn.dataset.originalText;
-        }
-
         return;
-
       }
 
       const payload = {
-
         fullName: document.getElementById("partner-name").value.trim(),
         organization: document.getElementById("org").value.trim(),
         email: document.getElementById("corp-email").value.trim(),
@@ -869,40 +754,21 @@ function setupBackendForms() {
         locationDetail: document.getElementById("partner-location-detail").value.trim(),
         sustainabilityInterest: document.getElementById("partner-sustainability-interest").value.trim(),
         message: document.getElementById("partner-message").value.trim(),
-
       };
 
       try {
-
         const result = await postFormData(API_BASE + "/api/partner", payload);
 
         if (result.success) {
-
           showNotice(partnerForm, "success", result.message);
           partnerForm.reset();
-
         } else {
-
           showNotice(partnerForm, "error", result.message || "Submission failed.");
-
         }
-
       } catch (error) {
-
         console.error(error);
         showNotice(partnerForm, "error", "Could not connect to the server.");
-
       }
-
-      partnerSubmitting = false;
-
-      if (submitBtn) {
-        submitBtn.disabled = false;
-        submitBtn.textContent = submitBtn.dataset.originalText;
-      }
-
     });
-
   }
-
-}}
+}
