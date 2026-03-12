@@ -876,6 +876,30 @@ app.post("/api/contact", async (req, res) => {
 });
 
 /* =========================
+SECTION: ADMIN CONTACT MESSAGES
+========================= */
+
+app.get("/api/admin/contact-messages", verifyAdmin, async (_req, res) => {
+  try {
+    const result = await pool.query(
+      "SELECT * FROM contact_messages ORDER BY created_at DESC"
+    );
+
+    return res.json({
+      success: true,
+      messages: result.rows
+    });
+  } catch (error) {
+    console.error("Admin contact messages fetch error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch contact messages."
+    });
+  }
+});
+
+/* =========================
 SECTION: SERVER START
 ========================= */
 
