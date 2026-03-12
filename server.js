@@ -39,7 +39,7 @@ SECTION: EMAIL CONFIG (RESEND)
 
 const { Resend } = require("resend");
 
-const resend = new Resend(process.env.re_ftr8A8dN_2im1xVAus4ZadKT8mckaPDBq);
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 /* =========================
 SECTION: HELPERS
